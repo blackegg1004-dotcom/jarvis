@@ -9,8 +9,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Unzip source
-        run: unzip -o jarvis-source.zip -x ".github/*"
+        with:
+          fetch-depth: 0
+      - name: Unzip latest uploaded source
+        run: |
+          f=$(git -c core.quotePath=false log -1 --name-only --pretty=format: -- '*.zip' | grep -m1 '\.zip$')
+          echo "Using $f"
+          unzip -o "$f" -x ".github/*"
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
